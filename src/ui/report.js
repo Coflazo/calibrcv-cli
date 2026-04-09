@@ -1,6 +1,6 @@
 import {
   brand, brandBold, success, warning, muted, subtle,
-  steppedBar, drawBox, scoreColor, gradeLabel,
+  steppedBar, drawBox, scoreColor, gradeLabel, wrapText,
 } from './theme.js';
 
 /**
@@ -14,7 +14,7 @@ export function printReport(report) {
   const scoreStr = color.bold(String(report.total).padStart(3));
 
   const lines = [];
-  lines.push(brandBold('ATS SCORE REPORT'));
+  lines.push(brandBold('\u2501\u2501 ATS SCORE REPORT \u2501\u2501'));
   lines.push('');
   lines.push(`  ${scoreStr} ${muted('/ 100')}   ${color.bold(grade)}  ${color(label)}`);
   lines.push('');
@@ -29,6 +29,7 @@ export function printReport(report) {
       lines.push(`  ${score}/${max}  ${bar}  ${name}`);
     }
     lines.push('');
+    lines.push(muted('  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'));
   }
 
   // Law violations
@@ -37,27 +38,34 @@ export function printReport(report) {
     lines.push(brandBold('LAW VIOLATIONS'));
     const shown = violations.slice(0, 5);
     for (const v of shown) {
-      lines.push(`  ${warning('!')} ${v}`);
+      const wrapped = wrapText(v, 62, '    ');
+      lines.push(`  ${warning('\u26A0')} ${wrapped[0]}`);
+      for (let j = 1; j < wrapped.length; j++) lines.push(`    ${wrapped[j]}`);
     }
     if (violations.length > 5) {
       lines.push(muted(`  ... and ${violations.length - 5} more`));
     }
     lines.push('');
+    lines.push(muted('  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'));
   }
 
   // Recommendations
   if (report.recommendations && report.recommendations.length > 0) {
     lines.push(brandBold('RECOMMENDATIONS'));
     for (let i = 0; i < report.recommendations.length; i++) {
-      lines.push(`  ${muted(`${i + 1}.`)} ${report.recommendations[i]}`);
+      const rec = report.recommendations[i];
+      const wrapped = wrapText(rec, 60, '     ');
+      lines.push(`  ${brand(`${i + 1}.`)} ${wrapped[0]}`);
+      for (let j = 1; j < wrapped.length; j++) lines.push(`     ${wrapped[j]}`);
     }
     lines.push('');
   }
 
   // Missing keywords
-  if (report.missingKeywords && report.missingKeywords.length > 0) {
+  const missingKw = report.categories?.keywords?.missing_keywords || [];
+  if (missingKw.length > 0) {
     lines.push(brandBold('MISSING KEYWORDS'));
-    const kw = report.missingKeywords.map(k => subtle(`[${k}]`)).join(' ');
+    const kw = missingKw.map(k => subtle(`[${k}]`)).join(' ');
     lines.push(`  ${kw}`);
     lines.push('');
   }

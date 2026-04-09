@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=200&section=header&text=calibrcv&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Your%20resume%20is%20probably%20getting%20rejected%20by%20robots.%20Fix%20it%20in%20your%20terminal.&descSize=14&descAlignY=55&descAlign=50" width="100%" alt="calibrcv header" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:D4621A,100:E8883A&height=200&section=header&text=calibrcv&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Your%20resume%20is%20probably%20getting%20rejected%20by%20robots.%20Fix%20it%20in%20your%20terminal.&descSize=14&descAlignY=55&descAlign=50" width="100%" alt="calibrcv header" />
 </p>
 
 <p align="center">
@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-  <a href="https://readme-typing-svg.demolab.com"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=667EEA&center=true&vCenter=true&random=false&width=500&lines=Everyone+deserves+a+great+resume.;Open+source+ATS+resume+optimizer.;Runs+offline.+No+account.+No+cloud.;9-stage+AI+pipeline+%2B+scoring+engine." alt="Typing SVG" /></a>
+  <a href="https://readme-typing-svg.demolab.com"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=D4621A&center=true&vCenter=true&random=false&width=500&lines=Everyone+deserves+a+great+resume.;Open+source+ATS+resume+optimizer.;Runs+offline.+No+account.+No+cloud.;9-stage+AI+pipeline+%2B+scoring+engine." alt="Typing SVG" /></a>
 </p>
 
 <p align="center">
@@ -261,7 +261,6 @@ The scoring engine is pure math. No AI calls, no external API. Five categories, 
 </tr>
 </table>
 
-<p align="center"><em>Same person, same experience. Left: colorful template resume with skill bars and vague bullets. Right: CalibrCV output -- clean, quantified, ATS-optimized.</em></p>
 
 <details>
 <summary>Want the LaTeX source?</summary>
@@ -294,8 +293,14 @@ CalibrCV is the answer: a professional-grade resume pipeline you can install in 
 
 The job market is rough enough. Your resume format should not be the thing that stops you.
 
-> *"The challenge of life, I have found, is to build a resume that doesn't simply tell a story about what you want to be, but it's a story about who you want to be."*
-> -- Oprah Winfrey
+<div align="center">
+<br />
+<em>"The challenge of life, I have found, is to build a resume that doesn't<br />
+simply tell a story about what you want to be, but it's a story about who you want to be."</em>
+<br /><br />
+<strong>&mdash; Oprah Winfrey</strong>
+<br /><br />
+</div>
 
 ## Contributing
 
@@ -330,5 +335,5 @@ This project stands on the shoulders of generous tools and teams:
 [MIT](LICENSE)
 
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=100&section=footer" width="100%" alt="footer" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:D4621A,100:E8883A&height=100&section=footer" width="100%" alt="footer" />
 </p>

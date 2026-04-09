@@ -23,6 +23,8 @@ program
   .description('AI-powered resume optimizer. Runs in your terminal.')
   .version('1.0.0');
 
+program.addHelpText('before', `\n  ${brandBold('calibrcv')} ${muted('v1.0.0')}\n  ${muted('\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500')}\n`);
+
 // ── BUILD command ─────────────────────────────────────────────
 
 program
@@ -178,6 +180,13 @@ program
       }
 
       const pdfBuffer = readFileSync(absPath);
+
+      console.log('');
+      console.log(brandBold('  calibrcv') + muted(' v1.0.0'));
+      console.log(muted('  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'));
+      console.log(muted(`  Scoring ${basename(absPath)}...`));
+      console.log('');
+
       const { text } = await extractTextFromPDF(pdfBuffer);
 
       let jobDescription = null;

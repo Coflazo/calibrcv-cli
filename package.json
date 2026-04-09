@@ -1,0 +1,58 @@
+{
+  "name": "calibrcv",
+  "version": "1.0.0",
+  "description": "AI-powered resume optimizer that runs in your terminal.",
+  "type": "module",
+  "bin": {
+    "calibrcv": "./bin/calibrcv.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "resume",
+    "resume-builder",
+    "resume-optimizer",
+    "cv",
+    "ats",
+    "ats-score",
+    "ats-friendly",
+    "cli",
+    "ai",
+    "ollama",
+    "latex",
+    "job-search",
+    "career",
+    "optimization",
+    "open-source"
+  ],
+  "license": "MIT",
+  "author": "Cagan Oflazoglu",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Coflazo/calibrcv-cli"
+  },
+  "homepage": "https://github.com/Coflazo/calibrcv-cli#readme",
+  "bugs": {
+    "url": "https://github.com/Coflazo/calibrcv-cli/issues"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "commander": "^12.0.0",
+    "ora": "^8.0.0",
+    "chalk": "^5.3.0",
+    "@inquirer/prompts": "^7.0.0",
+    "dotenv": "^16.4.0",
+    "pdf-parse": "^1.1.1",
+    "pdf-lib": "^1.17.1",
+    "natural": "^8.0.1",
+    "cheerio": "^1.0.0",
+    "groq-sdk": "^0.7.0",
+    "@google/generative-ai": "^0.21.0"
+  }
+}

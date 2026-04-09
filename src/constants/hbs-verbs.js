@@ -1,0 +1,15 @@
+export const HBS_VERBS = [
+  'architected', 'engineered', 'synthesized', 'constructed', 'deployed',
+  'formulated', 'orchestrated', 'executed', 'modelled', 'modeled', 'spearheaded',
+  'designed', 'developed', 'delivered', 'automated', 'optimised', 'optimized',
+  'launched', 'scaled', 'diagnosed', 'evaluated', 'mapped', 'built',
+  'implemented', 'piloted', 'led', 'directed', 'managed', 'analysed', 'analyzed',
+  'generated', 'secured', 'reduced', 'increased', 'projected', 'streamlined',
+  'transformed', 'drove', 'established', 'created', 'expanded', 'accelerated',
+  'pioneered', 'championed', 'coordinated', 'supervised', 'trained', 'mentored',
+  'presented', 'negotiated', 'resolved', 'produced', 'maintained', 'integrated',
+  'migrated', 'refactored', 'tested', 'validated', 'documented', 'published',
+  'researched', 'identified', 'improved', 'achieved', 'exceeded', 'won',
+  'contributed', 'supported', 'facilitated', 'consolidated', 'restructured',
+  'configured', 'overhauled', 'devised', 'initiated', 'cultivated',
+];

@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { Command } from 'commander';
-import chalk from 'chalk';
 import { readFileSync, existsSync } from 'fs';
 import { resolve, basename } from 'path';
 
@@ -15,6 +14,7 @@ import { runInterview } from '../src/ui/interview.js';
 import { printReport } from '../src/ui/report.js';
 import { scrapeJobUrl } from '../src/lib/job-scraper.js';
 import { parseResume } from '../src/lib/resume-parser.js';
+import { brandBold, brand, success, error, warning, muted } from '../src/ui/theme.js';
 
 const program = new Command();
 
@@ -57,7 +57,7 @@ program
       // Read the PDF
       const absPath = resolve(resumePath);
       if (!existsSync(absPath)) {
-        console.error(chalk.red(`File not found: ${absPath}`));
+        console.error(error(`File not found: ${absPath}`));
         process.exit(1);
       }
       const pdfBuffer = readFileSync(absPath);
@@ -70,25 +70,25 @@ program
       // Job description (optional) — supports URL, file path, or inline text
       let jobDescription = null;
       if (config.jobUrl) {
-        console.log(chalk.dim(`  Fetching job description from ${config.jobUrl}...`));
+        console.log(muted(`  Fetching job description from ${config.jobUrl}...`));
         try {
           const job = await scrapeJobUrl(config.jobUrl);
           jobDescription = `Title: ${job.title}\nCompany: ${job.company}\n\n${job.description}`;
-          console.log(chalk.dim(`  Found: ${job.title} at ${job.company}`));
+          console.log(muted(`  Found: ${job.title} at ${job.company}`));
         } catch (err) {
-          console.error(chalk.yellow(`  Could not scrape job URL: ${err.message}`));
+          console.error(warning(`  Could not scrape job URL: ${err.message}`));
         }
       } else if (config.jobDesc) {
         const jd = config.jobDesc;
         if (jd.startsWith('http://') || jd.startsWith('https://')) {
           // Auto-detect URL
-          console.log(chalk.dim(`  Fetching job description from ${jd}...`));
+          console.log(muted(`  Fetching job description from ${jd}...`));
           try {
             const job = await scrapeJobUrl(jd);
             jobDescription = `Title: ${job.title}\nCompany: ${job.company}\n\n${job.description}`;
-            console.log(chalk.dim(`  Found: ${job.title} at ${job.company}`));
+            console.log(muted(`  Found: ${job.title} at ${job.company}`));
           } catch (err) {
-            console.error(chalk.yellow(`  Could not scrape job URL: ${err.message}`));
+            console.error(warning(`  Could not scrape job URL: ${err.message}`));
           }
         } else if (existsSync(resolve(jd))) {
           // File path
@@ -100,8 +100,9 @@ program
       }
 
       console.log('');
-      console.log(chalk.bold('  CalibrCV'));
-      console.log(chalk.dim(`  ${basename(absPath)} -> ${basename(outputPath)}`));
+      console.log(brandBold('  calibrcv') + muted(' v1.0.0'));
+      console.log(muted('  \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500'));
+      console.log(muted(`  ${basename(absPath)} \u2192 ${basename(outputPath)}`));
       console.log('');
 
       const pipeline = new ResumePipeline();
@@ -141,19 +142,19 @@ program
         printReport(result.atsBreakdown);
 
         if (result.pdfBuffer) {
-          console.log(chalk.green(`  PDF saved to ${outputPath}`));
-          console.log(chalk.dim(`  LaTeX source saved to ${outputPath.replace(/\.pdf$/i, '.tex')}`));
+          console.log(success(`  PDF saved to ${outputPath}`));
+          console.log(muted(`  LaTeX source saved to ${outputPath.replace(/\.pdf$/i, '.tex')}`));
         } else {
-          console.log(chalk.yellow('  No PDF generated (LaTeX compiler not found).'));
-          console.log(chalk.dim(`  LaTeX source saved to ${outputPath.replace(/\.pdf$/i, '.tex')}`));
+          console.log(warning('  No PDF generated (LaTeX compiler not found).'));
+          console.log(muted(`  LaTeX source saved to ${outputPath.replace(/\.pdf$/i, '.tex')}`));
         }
       }
 
     } catch (err) {
-      console.error(chalk.red(`\n  Error: ${err.message}`));
+      console.error(error(`\n  Error: ${err.message}`));
       if (err.errors) {
         for (const e of err.errors) {
-          console.error(chalk.dim(`    ${e.provider}: ${e.error}`));
+          console.error(muted(`    ${e.provider}: ${e.error}`));
         }
       }
       process.exit(1);
@@ -172,7 +173,7 @@ program
     try {
       const absPath = resolve(resumePath);
       if (!existsSync(absPath)) {
-        console.error(chalk.red(`File not found: ${absPath}`));
+        console.error(error(`File not found: ${absPath}`));
         process.exit(1);
       }
 
@@ -206,7 +207,7 @@ program
       printReport(report);
 
     } catch (err) {
-      console.error(chalk.red(`\n  Error: ${err.message}`));
+      console.error(error(`\n  Error: ${err.message}`));
       process.exit(1);
     }
   });

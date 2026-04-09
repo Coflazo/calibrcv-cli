@@ -2,7 +2,7 @@
 <rect width="160" height="40" rx="8" fill="#F0EBFC"/>
 <rect x="0.25" y="0.25" width="159.5" height="39.5" rx="7.75" stroke="white" stroke-opacity="0.15" stroke-width="0.5"/>
 <circle cx="24" cy="20" r="8" fill="#6C47FF"/>
-<path d="M20.5 17.5L24 14L27.5 17.5L24 21L20.5 17.5Z" fill="white"/>
-<path d="M20.5 22.5L24 19L27.5 22.5L24 26L20.5 22.5Z" fill="white" fill-opacity="0.6"/>
+<path d="M20 20L24 16L28 20L24 24L20 20Z" fill="white"/>
+<circle cx="24" cy="20" r="2.5" fill="#6C47FF"/>
 <text x="40" y="24.5" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#6C47FF">Backed by fal.ai</text>
 </svg>

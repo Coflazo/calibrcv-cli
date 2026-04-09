@@ -1,5 +1,5 @@
 import { input } from '@inquirer/prompts';
-import chalk from 'chalk';
+import { brand, brandBold, warning, muted } from './theme.js';
 
 /**
  * Run the enrichment interview in the terminal.
@@ -34,27 +34,27 @@ export async function runInterview(questions, skip = false) {
 
   const total = normalized.length;
   console.log('');
-  console.log(chalk.bold('  Enrichment Interview'));
-  console.log(chalk.dim(`  ${total} questions to strengthen your resume. Press Enter to skip any.`));
-  console.log(chalk.dim('  Tip: Include numbers, tool names, and specific outcomes for the best results.'));
+  console.log(brandBold('  Enrichment Interview'));
+  console.log(muted(`  ${total} questions to strengthen your resume. Press Enter to skip any.`));
+  console.log(muted('  Tip: Include numbers, tool names, and specific outcomes for the best results.'));
   console.log('');
 
   const answers = [];
 
   for (let i = 0; i < total; i++) {
     const q = normalized[i];
-    const progress = chalk.dim(`[${i + 1}/${total}]`);
+    const progress = muted(`[${i + 1}/${total}]`);
 
     // Show why this question matters
     if (q.why_important) {
-      console.log(chalk.cyan(`  ${progress} Why: ${q.why_important}`));
+      console.log(brand(`  ${progress} Why: ${q.why_important}`));
     }
     if (q.context) {
-      console.log(chalk.dim(`  Section: ${q.context}`));
+      console.log(muted(`  Section: ${q.context}`));
     }
 
     const hint = q.example_answer
-      ? chalk.dim(` (e.g. "${q.example_answer}")`)
+      ? muted(` (e.g. "${q.example_answer}")`)
       : '';
 
     const answer = await input({
@@ -66,12 +66,12 @@ export async function runInterview(questions, skip = false) {
 
     // Smart validation: warn on short answers
     if (trimmed && trimmed.length < 15 && trimmed.length > 0) {
-      console.log(chalk.yellow('  Tip: Longer answers with specifics (numbers, tools, outcomes) produce stronger bullets.'));
+      console.log(warning('  Tip: Longer answers with specifics (numbers, tools, outcomes) produce stronger bullets.'));
     }
 
     // Nudge for metrics if answer lacks numbers
     if (trimmed && trimmed.length > 10 && !/\d/.test(trimmed)) {
-      console.log(chalk.dim('  Tip: Try adding a number (%, $, count, timeframe) to make this bullet quantifiable.'));
+      console.log(muted('  Tip: Try adding a number (%, $, count, timeframe) to make this bullet quantifiable.'));
     }
 
     answers.push({
@@ -87,7 +87,7 @@ export async function runInterview(questions, skip = false) {
 
   const answered = answers.filter(a => a.answer).length;
   console.log('');
-  console.log(chalk.dim(`  Done. ${answered}/${total} questions answered.`));
+  console.log(muted(`  Done. ${answered}/${total} questions answered.`));
   console.log('');
   return answers;
 }

@@ -261,13 +261,13 @@ The scoring engine is pure math. No AI calls, no external API. Five categories, 
 </tr>
 </table>
 
-<p align="center"><em>Same person, same experience. Left: vague bullets, no metrics. Right: rewritten under the 8 Laws.</em></p>
+<p align="center"><em>Same person, same experience. Left: colorful template resume with skill bars and vague bullets. Right: CalibrCV output -- clean, quantified, ATS-optimized.</em></p>
 
 <details>
 <summary>Want the LaTeX source?</summary>
 
-- [`example_before.tex`](assets/example_before.tex): The original weak resume
-- [`example_after.tex`](assets/example_after.tex): Optimized output under the 8 Laws
+- [`example_before.tex`](assets/example_before.tex): Colorful template resume (sidebar, skill bars, profile photo)
+- [`example_after.tex`](assets/example_after.tex): CalibrCV output (clean, quantified, ATS-optimized)
 
 Compile them yourself: `pdflatex assets/example_after.tex`
 </details>
@@ -294,8 +294,8 @@ CalibrCV is the answer: a professional-grade resume pipeline you can install in 
 
 The job market is rough enough. Your resume format should not be the thing that stops you.
 
-> *"Education is the most powerful weapon which you can use to change the world."*
-> -- Nelson Mandela
+> *"The challenge of life, I have found, is to build a resume that doesn't simply tell a story about what you want to be, but it's a story about who you want to be."*
+> -- Oprah Winfrey
 
 ## Contributing
 

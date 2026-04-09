@@ -1,27 +1,28 @@
 import ora from 'ora';
-import chalk from 'chalk';
+import { brand, brandBold, success, error, muted } from './theme.js';
 
-const STAGE_MESSAGES = {
-  parsing: 'Extracting resume content',
-  analyzing: 'Analyzing your profile',
-  enriching: 'Waiting for your answers',
-  synthesizing: 'Rewriting with CalibrCV rules',
-  tailoring: 'Tailoring for the target role',
-  generating_latex: 'Engineering your layout',
-  compiling: 'Compiling to PDF',
-  trimming: 'Fitting to one page',
-  checking_pages: 'Verifying page length',
-  scoring: 'Calculating ATS compatibility',
-  complete: 'Done',
-  error: 'Error',
-};
+const STAGES = [
+  { key: 'parsing', label: 'Extracting resume content', num: 1 },
+  { key: 'analyzing', label: 'Analyzing your profile', num: 2 },
+  { key: 'enriching', label: 'Waiting for your answers', num: 3 },
+  { key: 'synthesizing', label: 'Rewriting with CalibrCV rules', num: 4 },
+  { key: 'tailoring', label: 'Tailoring for the target role', num: 5 },
+  { key: 'generating_latex', label: 'Engineering your layout', num: 6 },
+  { key: 'compiling', label: 'Compiling to PDF', num: 7 },
+  { key: 'trimming', label: 'Fitting to one page', num: 7 },
+  { key: 'checking_pages', label: 'Verifying page length', num: 7 },
+  { key: 'scoring', label: 'Calculating ATS compatibility', num: 8 },
+];
+
+const STAGE_MAP = Object.fromEntries(STAGES.map(s => [s.key, s]));
+const TOTAL_STAGES = 8;
 
 /**
  * Create a pipeline UI that renders progress via ora spinner.
  */
 export function createPipelineUI() {
   const spinner = ora({
-    text: 'Starting pipeline...',
+    text: brand('Starting pipeline...'),
     color: 'yellow',
   });
   spinner.start();
@@ -29,18 +30,20 @@ export function createPipelineUI() {
   return {
     onProgress({ state, message, progress }) {
       if (state === 'complete') {
-        spinner.succeed(chalk.green('Your resume is ready.'));
+        spinner.succeed(success.bold(' Resume ready.'));
         return;
       }
 
       if (state === 'error') {
-        spinner.fail(chalk.red(message));
+        spinner.fail(error(` ${message}`));
         return;
       }
 
-      const label = STAGE_MESSAGES[state] || message;
-      const pct = progress ? chalk.dim(` [${progress}%]`) : '';
-      spinner.text = `${label}${pct}`;
+      const stage = STAGE_MAP[state];
+      const label = stage ? stage.label : message;
+      const num = stage ? muted(`[${stage.num}/${TOTAL_STAGES}]`) : '';
+      const pct = progress ? muted(` ${progress}%`) : '';
+      spinner.text = `${num} ${brand(label)}${pct}`;
     },
 
     pause() {

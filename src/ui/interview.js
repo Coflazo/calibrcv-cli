@@ -3,7 +3,7 @@ import chalk from 'chalk';
 
 /**
  * Run the enrichment interview in the terminal.
- * Prompts the user for each question, returns answers array.
+ * Prompts the user for each question with context, validation, and progress.
  *
  * @param {Array} questions - Follow-up questions from analysis.
  * @param {boolean} skip - If true, return empty answers.
@@ -17,12 +17,13 @@ export async function runInterview(questions, skip = false) {
   // Normalize questions (API can return strings or objects)
   const normalized = questions.map((q, i) => {
     if (typeof q === 'string') {
-      return { id: `q${i + 1}`, question: q, context: '', example_answer: '' };
+      return { id: `q${i + 1}`, question: q, context: '', why_important: '', example_answer: '' };
     }
     return {
       id: q.id || `q${i + 1}`,
       question: q.question || q,
       context: q.context || '',
+      why_important: q.why_important || '',
       example_answer: q.example_answer || '',
     };
   });
@@ -31,18 +32,25 @@ export async function runInterview(questions, skip = false) {
     return normalized.map(q => ({ question: q.question, answer: '' }));
   }
 
+  const total = normalized.length;
   console.log('');
   console.log(chalk.bold('  Enrichment Interview'));
-  console.log(chalk.dim('  Answer these questions to improve your resume. Press Enter to skip any.'));
+  console.log(chalk.dim(`  ${total} questions to strengthen your resume. Press Enter to skip any.`));
+  console.log(chalk.dim('  Tip: Include numbers, tool names, and specific outcomes for the best results.'));
   console.log('');
 
   const answers = [];
 
-  for (let i = 0; i < normalized.length; i++) {
+  for (let i = 0; i < total; i++) {
     const q = normalized[i];
+    const progress = chalk.dim(`[${i + 1}/${total}]`);
 
+    // Show why this question matters
+    if (q.why_important) {
+      console.log(chalk.cyan(`  ${progress} Why: ${q.why_important}`));
+    }
     if (q.context) {
-      console.log(chalk.dim(`  [${q.context}]`));
+      console.log(chalk.dim(`  Section: ${q.context}`));
     }
 
     const hint = q.example_answer
@@ -50,16 +58,36 @@ export async function runInterview(questions, skip = false) {
       : '';
 
     const answer = await input({
-      message: `${i + 1}/${normalized.length}  ${q.question}${hint}`,
+      message: `${progress}  ${q.question}${hint}`,
       default: '',
     });
 
+    const trimmed = answer.trim();
+
+    // Smart validation: warn on short answers
+    if (trimmed && trimmed.length < 15 && trimmed.length > 0) {
+      console.log(chalk.yellow('  Tip: Longer answers with specifics (numbers, tools, outcomes) produce stronger bullets.'));
+    }
+
+    // Nudge for metrics if answer lacks numbers
+    if (trimmed && trimmed.length > 10 && !/\d/.test(trimmed)) {
+      console.log(chalk.dim('  Tip: Try adding a number (%, $, count, timeframe) to make this bullet quantifiable.'));
+    }
+
     answers.push({
       question: q.question,
-      answer: answer.trim(),
+      answer: trimmed,
     });
+
+    // Visual separator between questions
+    if (i < total - 1) {
+      console.log('');
+    }
   }
 
+  const answered = answers.filter(a => a.answer).length;
+  console.log('');
+  console.log(chalk.dim(`  Done. ${answered}/${total} questions answered.`));
   console.log('');
   return answers;
 }

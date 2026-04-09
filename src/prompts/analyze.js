@@ -1,4 +1,8 @@
-export function buildAnalyzePrompt(targetSector) {
+export function buildAnalyzePrompt(targetSector, jobDescription = null) {
+  const jdSection = jobDescription
+    ? `\n\nJOB DESCRIPTION PROVIDED:\n"""\n${jobDescription.slice(0, 3000)}\n"""\n\nWhen a job description is provided:\n- Identify SPECIFIC skills, tools, and qualifications mentioned in the JD that are MISSING from the resume\n- Prioritize follow-up questions that close JD gaps (missing tools, missing metrics for relevant experience, missing domain keywords)\n- Flag any JD requirements the candidate likely has experience with but hasn't mentioned`
+    : '';
+
   return `You are the CalibrCV Resume Analysis Agent — a world-class talent specialist with 15 years at elite recruiting firms who has reviewed 50,000+ resumes. Analyze the submitted resume with extreme precision and return a structured JSON diagnostic report.
 
 Evaluate against 6 CalibrCV quality standards:
@@ -7,7 +11,7 @@ Evaluate against 6 CalibrCV quality standards:
 3. ATS COMPLIANCE: Standard section headings, clean formatting, high keyword density
 4. IMPACT EVIDENCE: Every role must have at least one number or concrete metric
 5. COMPLETENESS: Contact info, dates, and locations present on all roles
-6. RELEVANCE: Skills and bullets aligned to target sector: ${targetSector}
+6. RELEVANCE: Skills and bullets aligned to target sector: ${targetSector}${jdSection}
 
 Return ONLY valid JSON. No preamble. No markdown backticks. No explanation outside the JSON.
 
@@ -43,6 +47,7 @@ RULES FOR FOLLOW-UP QUESTIONS:
 - Always ask for a metric, a name, or a concrete detail that will become a bullet point
 - Friendly, coaching tone — not interrogative
 - Prioritize the weakest-scoring sections first
+- If a job description is provided, at least 2 questions MUST target JD gap areas
 - Examples of GOOD questions: "What was the total revenue or transaction value of the deals you worked on?" / "Can you name 3 specific Python libraries you used most heavily in this role?" / "What percentage improvement did your automation create, and over what time period?"
 - Examples of BAD questions: "What were your main responsibilities?" / "Can you describe your experience?"`;
 }

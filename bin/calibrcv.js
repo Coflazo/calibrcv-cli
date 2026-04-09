@@ -32,9 +32,9 @@ program
   .option('-o, --output <path>', 'Output PDF path')
   .option('-s, --sector <sector>', 'Target sector (e.g. banking, consulting, technology)')
   .option('--job-url <url>', 'Job posting URL for tailoring')
-  .option('--job-desc <path>', 'Path to job description text file')
-  .option('-p, --provider <name>', 'LLM provider (ollama, groq, gemini, openrouter)')
-  .option('-m, --model <name>', 'Ollama model name')
+  .option('--job-desc <text>', 'Job description: file path, URL, or inline text')
+  .option('-p, --provider <name>', 'LLM provider (ollama, groq, gemini, openrouter, openai, anthropic)')
+  .option('-m, --model <name>', 'Model name for any provider (e.g. gpt-4o, claude-sonnet-4-20250514, llama3.1)')
   .option('--skip-enrich', 'Skip the enrichment interview')
   .option('--vlm', 'Use Vision Language Model for PDF extraction')
   .option('--vlm-model <name>', 'VLM model name (default: qwen2-vl for Ollama)')
@@ -42,7 +42,16 @@ program
   .action(async (resumePath, opts) => {
     try {
       const config = loadConfig(opts);
-      if (config.model) process.env.OLLAMA_MODEL = config.model;
+      // Set model env var for the appropriate provider
+      if (config.model) {
+        const p = config.provider;
+        if (p === 'openai') process.env.OPENAI_MODEL = config.model;
+        else if (p === 'anthropic') process.env.ANTHROPIC_MODEL = config.model;
+        else if (p === 'groq') process.env.GROQ_MODEL = config.model;
+        else if (p === 'gemini') process.env.GEMINI_MODEL = config.model;
+        else if (p === 'openrouter') process.env.OPENROUTER_MODEL = config.model;
+        else process.env.OLLAMA_MODEL = config.model;
+      }
       configureProviders({ provider: config.provider });
 
       // Read the PDF
@@ -58,7 +67,7 @@ program
         ? resolve(config.output)
         : resolve(basename(absPath, '.pdf') + '_calibrcv.pdf');
 
-      // Job description (optional)
+      // Job description (optional) — supports URL, file path, or inline text
       let jobDescription = null;
       if (config.jobUrl) {
         console.log(chalk.dim(`  Fetching job description from ${config.jobUrl}...`));
@@ -70,11 +79,23 @@ program
           console.error(chalk.yellow(`  Could not scrape job URL: ${err.message}`));
         }
       } else if (config.jobDesc) {
-        const jdPath = resolve(config.jobDesc);
-        if (existsSync(jdPath)) {
-          jobDescription = readFileSync(jdPath, 'utf-8');
+        const jd = config.jobDesc;
+        if (jd.startsWith('http://') || jd.startsWith('https://')) {
+          // Auto-detect URL
+          console.log(chalk.dim(`  Fetching job description from ${jd}...`));
+          try {
+            const job = await scrapeJobUrl(jd);
+            jobDescription = `Title: ${job.title}\nCompany: ${job.company}\n\n${job.description}`;
+            console.log(chalk.dim(`  Found: ${job.title} at ${job.company}`));
+          } catch (err) {
+            console.error(chalk.yellow(`  Could not scrape job URL: ${err.message}`));
+          }
+        } else if (existsSync(resolve(jd))) {
+          // File path
+          jobDescription = readFileSync(resolve(jd), 'utf-8');
         } else {
-          console.error(chalk.yellow(`  Job description file not found: ${jdPath}`));
+          // Inline text
+          jobDescription = jd;
         }
       }
 
@@ -145,7 +166,7 @@ program
   .command('score')
   .description('Run ATS scoring on a resume PDF (no AI needed)')
   .argument('<resume>', 'Path to your resume PDF')
-  .option('--job-desc <path>', 'Path to job description text file')
+  .option('--job-desc <text>', 'Job description: file path, URL, or inline text')
   .option('--job-url <url>', 'Job posting URL for keyword matching')
   .action(async (resumePath, opts) => {
     try {
@@ -165,9 +186,16 @@ program
           jobDescription = job.description;
         } catch (_) { /* ignore */ }
       } else if (opts.jobDesc) {
-        const jdPath = resolve(opts.jobDesc);
-        if (existsSync(jdPath)) {
-          jobDescription = readFileSync(jdPath, 'utf-8');
+        const jd = opts.jobDesc;
+        if (jd.startsWith('http://') || jd.startsWith('https://')) {
+          try {
+            const job = await scrapeJobUrl(jd);
+            jobDescription = job.description;
+          } catch (_) { /* ignore */ }
+        } else if (existsSync(resolve(jd))) {
+          jobDescription = readFileSync(resolve(jd), 'utf-8');
+        } else {
+          jobDescription = jd;
         }
       }
 

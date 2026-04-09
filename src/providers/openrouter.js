@@ -1,5 +1,5 @@
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
-const MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
+const DEFAULT_MODEL = 'meta-llama/llama-3.1-8b-instruct:free';
 
 /**
  * Call OpenRouter free tier (llama-3.1-8b-instruct:free).
@@ -8,7 +8,7 @@ export async function callOpenRouter(systemPrompt, userMessage, options = {}) {
   const { responseFormat = 'text' } = options;
 
   const body = {
-    model: MODEL,
+    model: process.env.OPENROUTER_MODEL || DEFAULT_MODEL,
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userMessage },

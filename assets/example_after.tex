@@ -1,0 +1,140 @@
+%------------------------
+% Example "After" Resume — optimized by CalibrCV under the 8 Laws
+% This is a fictional resume showing CalibrCV's output quality
+% Based off: https://github.com/sb2nov/resume
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{fontawesome5}
+\input{glyphtounicode}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\pdfgentounicode=1
+
+\newcommand{\resumeItem}[1]{
+  \item\small{{#1 \vspace{-2pt}}}
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge \scshape Alex Chen} \\ \vspace{1pt}
+    \small (555) 123-4567 $|$
+    \href{mailto:alex.chen@email.com}{\underline{alex.chen@email.com}} $|$
+    \href{https://linkedin.com/in/alexchen}{\underline{linkedin.com/in/alexchen}} $|$
+    San Francisco, CA
+\end{center}
+
+%-----------SUMMARY-----------
+\section{Summary}
+Full-stack software engineer with production experience across Python and JavaScript ecosystems. Delivered API performance improvements reducing latency by 40\% and built internal tooling adopted by a 12-person engineering team. Background in distributed systems, cloud infrastructure on AWS, and data-driven product development.
+
+%-----------EXPERIENCE-----------
+\section{Experience}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {Software Developer}{Jun. 2023 -- Present}
+    {TechCorp Inc.}{San Francisco, CA}
+    \resumeItemListStart
+      \resumeItem{Engineered REST API endpoints serving 50K daily requests; reduced p95 latency by 40\%}
+      \resumeItem{Deployed CI/CD pipeline on AWS cutting release cycle from 2 weeks to 3 days}
+      \resumeItem{Architected internal monitoring dashboard adopted by 12 engineers across 3 squads}
+    \resumeItemListEnd
+
+  \resumeSubheading
+    {Software Engineering Intern}{Jan. 2023 -- May 2023}
+    {StartupXYZ}{Austin, TX}
+    \resumeItemListStart
+      \resumeItem{Developed 8 React components and Node.js services powering the core dashboard}
+      \resumeItem{Resolved 35 production bugs; improved crash-free session rate from 94\% to 99.2\%}
+    \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+%-----------PROJECTS-----------
+\section{Projects}
+\resumeSubHeadingListStart
+  \resumeProjectHeading
+    {\textbf{E-Commerce Platform} $|$ \emph{React, Node.js, MongoDB, Stripe, AWS}}{2023}
+    \resumeItemListStart
+      \resumeItem{Architected full-stack marketplace handling 500+ products with Stripe payments}
+      \resumeItem{Deployed on AWS ECS with auto-scaling; maintained 99.5\% uptime over 6 months}
+    \resumeItemListEnd
+
+  \resumeProjectHeading
+    {\textbf{Weather Analytics Dashboard} $|$ \emph{React, OpenWeatherMap API, Chart.js}}{2022}
+    \resumeItemListStart
+      \resumeItem{Engineered responsive PWA delivering 5-day forecasts for 200K+ global cities}
+      \resumeItem{Optimized API caching layer reducing external calls by 60\%; sub-200ms load time}
+    \resumeItemListEnd
+\resumeSubHeadingListEnd
+
+%-----------EDUCATION-----------
+\section{Education}
+\resumeSubHeadingListStart
+  \resumeSubheading
+    {University of California, Berkeley}{Aug. 2019 -- May 2023}
+    {Bachelor of Science in Computer Science}{Berkeley, CA}
+\resumeSubHeadingListEnd
+
+%-----------SKILLS-----------
+\section{Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \small{\item{
+    \textbf{Quantitative Stack:} Python, JavaScript/TypeScript, Java, C++, SQL, React, Node.js, MongoDB, Docker, AWS \\
+    \textbf{Analytic Domain:} REST API Design, CI/CD, Distributed Systems, Cloud Infrastructure, Agile/Scrum
+  }}
+\end{itemize}
+
+\end{document}

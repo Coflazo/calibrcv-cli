@@ -1,0 +1,105 @@
+%------------------------
+% Example "Before" Resume — typical weak resume with common mistakes
+% This is a fictional resume used to demonstrate CalibrCV's improvements
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-0.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+\begin{document}
+
+%----------HEADING----------
+\begin{center}
+    \textbf{\Huge Alex Chen} \\
+    \vspace{2pt}
+    alex.chen@email.com $|$ (555) 123-4567
+\end{center}
+
+%-----------SUMMARY-----------
+\section{About Me}
+I am a passionate software engineer with experience in web development. I love building things and I'm always looking for new opportunities to grow. My goal is to work at a company where I can make an impact and learn new technologies.
+
+%-----------EXPERIENCE-----------
+\section{Work Experience}
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{Software Developer} & June 2023 -- Present \\
+      \textit{TechCorp Inc.} & \textit{San Francisco, CA} \\
+    \end{tabular*}\vspace{-7pt}
+    \begin{itemize}
+      \item Worked on the backend team to develop new features for the main product
+      \item Was responsible for writing code and fixing bugs in the codebase
+      \item Helped with code reviews and collaborated with other developers on the team
+      \item I used Python and JavaScript in my daily work and also used AWS for deployments
+      \item Participated in agile ceremonies including standups and sprint planning meetings
+    \end{itemize}
+
+  \item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{Junior Developer Intern} & Jan 2023 -- May 2023 \\
+      \textit{StartupXYZ} & \textit{Austin, TX} \\
+    \end{tabular*}\vspace{-7pt}
+    \begin{itemize}
+      \item Worked on various tasks assigned to me by the senior developers
+      \item Learned React and Node.js while building features for the web application
+      \item Fixed some bugs and improved the user interface of the dashboard
+    \end{itemize}
+\end{itemize}
+
+%-----------PROJECTS-----------
+\section{Projects}
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \item
+    \textbf{E-commerce Website} \\
+    Built a full-stack e-commerce website using React, Node.js, and MongoDB. The website has user authentication, product listings, shopping cart, and payment processing with Stripe. I also added search functionality and deployed it on AWS.
+
+  \item
+    \textbf{Weather App} \\
+    Created a weather application that shows current weather and forecasts. Used React for the frontend and integrated with the OpenWeatherMap API. The app is responsive and works on mobile devices.
+\end{itemize}
+
+%-----------EDUCATION-----------
+\section{Education}
+\begin{itemize}[leftmargin=0.15in, label={}]
+  \item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{University of California, Berkeley} & Aug 2019 -- May 2023 \\
+      \textit{B.S. in Computer Science} & \textit{Berkeley, CA} \\
+    \end{tabular*}
+\end{itemize}
+
+%-----------SKILLS-----------
+\section{Technical Skills}
+Python, JavaScript, React, Node.js, HTML, CSS, SQL, MongoDB, Git, AWS, Docker, Linux, Java, C++, REST APIs, Agile, Jira, VS Code
+
+\end{document}

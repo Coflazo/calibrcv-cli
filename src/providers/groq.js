@@ -16,7 +16,7 @@ export async function callGroq(systemPrompt, userMessage, options = {}) {
   const { responseFormat = 'text' } = options;
 
   const requestParams = {
-    model: 'llama-3.3-70b-versatile',
+    model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
     messages: [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userMessage },

@@ -2,6 +2,8 @@ import { callOllama, callOllamaVision } from '../providers/ollama.js';
 import { callGroq } from '../providers/groq.js';
 import { callGemini, callGeminiVision } from '../providers/gemini.js';
 import { callOpenRouter } from '../providers/openrouter.js';
+import { callOpenAI, callOpenAIVision } from '../providers/openai.js';
+import { callAnthropic, callAnthropicVision } from '../providers/anthropic.js';
 
 export class AllProvidersFailedError extends Error {
   constructor(errors) {
@@ -29,9 +31,12 @@ export function configureProviders(options = {}) {
   const forced = options.provider;
 
   if (forced) {
-    const map = { ollama: callOllama, groq: callGroq, gemini: callGemini, openrouter: callOpenRouter };
+    const map = {
+      ollama: callOllama, groq: callGroq, gemini: callGemini,
+      openrouter: callOpenRouter, openai: callOpenAI, anthropic: callAnthropic,
+    };
     if (!map[forced]) {
-      throw new Error(`Unknown provider: ${forced}. Use: ollama, groq, gemini, openrouter`);
+      throw new Error(`Unknown provider: ${forced}. Use: ollama, groq, gemini, openrouter, openai, anthropic`);
     }
     activeProviders = [{ name: forced, fn: map[forced] }];
     return;
@@ -50,6 +55,12 @@ export function configureProviders(options = {}) {
   }
   if (process.env.OPENROUTER_API_KEY) {
     providers.push({ name: 'openrouter', fn: callOpenRouter });
+  }
+  if (process.env.OPENAI_API_KEY) {
+    providers.push({ name: 'openai', fn: callOpenAI });
+  }
+  if (process.env.ANTHROPIC_API_KEY) {
+    providers.push({ name: 'anthropic', fn: callAnthropic });
   }
 
   activeProviders = providers;
@@ -126,7 +137,7 @@ export function parseJSONSafely(text) {
 
 /**
  * Route a VLM (vision) call through available vision-capable providers.
- * Waterfall: Gemini Vision (if API key) -> Ollama Vision (local).
+ * Waterfall: OpenAI Vision -> Anthropic Vision -> Gemini Vision -> Ollama Vision.
  * @param {string} prompt - Text prompt
  * @param {Buffer[]} imageBuffers - Array of PNG image buffers
  * @param {{ vlmModel?: string }} options
@@ -135,7 +146,25 @@ export function parseJSONSafely(text) {
 export async function callVLM(prompt, imageBuffers, options = {}) {
   const errors = [];
 
-  // Gemini first (cloud, faster)
+  // OpenAI Vision (GPT-4o, cloud)
+  if (process.env.OPENAI_API_KEY) {
+    try {
+      return await callOpenAIVision(prompt, imageBuffers);
+    } catch (err) {
+      errors.push({ provider: 'openai-vision', error: err.message });
+    }
+  }
+
+  // Anthropic Vision (Claude, cloud)
+  if (process.env.ANTHROPIC_API_KEY) {
+    try {
+      return await callAnthropicVision(prompt, imageBuffers);
+    } catch (err) {
+      errors.push({ provider: 'anthropic-vision', error: err.message });
+    }
+  }
+
+  // Gemini Vision (cloud, fast)
   if (process.env.GEMINI_API_KEY) {
     try {
       return await callGeminiVision(prompt, imageBuffers);

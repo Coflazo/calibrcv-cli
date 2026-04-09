@@ -81,7 +81,7 @@ export class ResumePipeline extends EventEmitter {
       if (!analysisResult) {
         this.setState('analyzing', 'Analyzing your profile...', 15);
         const raw = await callAI(
-          buildAnalyzePrompt(targetSector),
+          buildAnalyzePrompt(targetSector, jobDescription),
           `Resume text:\n${text}`,
           { responseFormat: 'json', taskName: 'analyze' }
         );

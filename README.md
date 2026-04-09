@@ -96,11 +96,22 @@ calibrcv build resume.pdf --sector banking
 # tailor for a specific job posting
 calibrcv build resume.pdf --job-url https://linkedin.com/jobs/view/123456
 
-# tailor from a local job description file
+# tailor from a job description file
 calibrcv build resume.pdf --job-desc posting.txt
 
+# paste job description inline
+calibrcv build resume.pdf --job-desc "Senior engineer role requiring Python, AWS..."
+
+# auto-detect URL in --job-desc
+calibrcv build resume.pdf --job-desc https://linkedin.com/jobs/view/123456
+
 # use a specific cloud provider
-calibrcv build resume.pdf --provider groq
+calibrcv build resume.pdf --provider openai
+
+# use any model with any provider
+calibrcv build resume.pdf --provider anthropic --model claude-sonnet-4-20250514
+calibrcv build resume.pdf --provider openai --model gpt-4o
+calibrcv build resume.pdf --provider groq --model llama-3.3-70b-versatile
 
 # use a different Ollama model
 calibrcv build resume.pdf --model mistral
@@ -108,7 +119,7 @@ calibrcv build resume.pdf --model mistral
 # skip the enrichment Q&A
 calibrcv build resume.pdf --skip-enrich
 
-# use VLM (vision model) for PDF extraction — great for scanned/image PDFs
+# use VLM (vision model) for PDF extraction
 calibrcv build resume.pdf --vlm
 
 # use a specific vision model with Ollama
@@ -126,20 +137,33 @@ calibrcv score resume.pdf
 # score against a job description file
 calibrcv score resume.pdf --job-desc posting.txt
 
-# score against a live job posting (keyword matching)
+# score against a live job posting
 calibrcv score resume.pdf --job-url "https://linkedin.com/jobs/view/123456"
+
+# score with inline job description text
+calibrcv score resume.pdf --job-desc "Looking for a backend engineer with Python, Go..."
 ```
 
 ## LLM Providers
 
 calibrcv tries providers in order and falls back automatically. Ollama is always first.
 
-| Provider | Model | How to enable |
-|----------|-------|---------------|
+| Provider | Default Model | How to enable |
+|----------|---------------|---------------|
 | **Ollama** (default) | `llama3.1:8b` | `ollama serve` + `ollama pull llama3.1` |
 | Groq | `llama-3.3-70b` | Set `GROQ_API_KEY` |
 | Google Gemini | `gemini-2.5-flash` | Set `GEMINI_API_KEY` |
 | OpenRouter | `llama-3.1-8b` (free tier) | Set `OPENROUTER_API_KEY` |
+| OpenAI | `gpt-4o-mini` | Set `OPENAI_API_KEY` |
+| Anthropic | `claude-sonnet-4` | Set `ANTHROPIC_API_KEY` |
+
+The `--model` flag works with any provider:
+
+```bash
+calibrcv build resume.pdf --provider openai --model gpt-4o
+calibrcv build resume.pdf --provider anthropic --model claude-sonnet-4-20250514
+calibrcv build resume.pdf --provider groq --model llama-3.3-70b-versatile
+```
 
 Put your keys in `.env` in your working directory or at `~/.calibrcv/.env`:
 
@@ -147,6 +171,8 @@ Put your keys in `.env` in your working directory or at `~/.calibrcv/.env`:
 GROQ_API_KEY=gsk_...
 GEMINI_API_KEY=AI...
 OPENROUTER_API_KEY=sk-or-...
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=sk-ant-...
 OLLAMA_MODEL=llama3.1
 VLM_MODEL=qwen2-vl
 ```
@@ -165,22 +191,16 @@ calibrcv build resume.pdf --vlm
 calibrcv build resume.pdf
 ```
 
-**VLM provider waterfall:** Gemini Flash (cloud, fast) -> Ollama + qwen2-vl (local, free)
+**VLM provider waterfall:** OpenAI GPT-4o -> Anthropic Claude -> Gemini Flash -> Ollama qwen2-vl
 
 | Provider | Model | How to enable | Speed |
 |----------|-------|---------------|-------|
+| **OpenAI** | `gpt-4o` | Set `OPENAI_API_KEY` | Fast |
+| **Anthropic** | `claude-sonnet-4` | Set `ANTHROPIC_API_KEY` | Fast |
 | **Google Gemini** | `gemini-2.5-flash` | Set `GEMINI_API_KEY` | Fast |
 | **Ollama** (local) | `qwen2-vl` | `ollama pull qwen2-vl` | Slower, fully offline |
 
-To use a different Ollama vision model:
-
-```bash
-calibrcv build resume.pdf --vlm --vlm-model llava:13b
-# or set VLM_MODEL in .env
-VLM_MODEL=bakllava
-```
-
-**Recommended vision models for Ollama:**
+**Recommended Ollama vision models:**
 
 | Model | Size | Best for |
 |-------|------|----------|
@@ -216,6 +236,15 @@ The scoring engine is pure math. No AI calls, no external API. Five categories, 
 | Parsability | 0-15 | Box-drawing chars, em dashes, smart quotes, encoding issues |
 | Completeness | 0-10 | Email, phone, LinkedIn, location, skills breadth |
 
+## Before & After
+
+The `assets/` folder includes example resumes showing exactly what calibrcv does:
+
+- **[`example_before.tex`](assets/example_before.tex)** — A typical resume with vague bullets, personal pronouns, no metrics
+- **[`example_after.tex`](assets/example_after.tex)** — Same person, rewritten under the 8 Laws with quantified impact
+
+Compile them yourself: `pdflatex assets/example_after.tex`
+
 ## Prerequisites
 
 - **Node.js 18+**
@@ -228,9 +257,13 @@ The scoring engine is pure math. No AI calls, no external API. Five categories, 
 
 ## Why This Exists
 
-I built CalibrCV as a full SaaS (Vercel + React + Supabase + Stripe). It worked, but it was heavy. Accounts, payments, database, browser automation, email notifications. A lot of infrastructure for a tool that fundamentally takes text in and spits a PDF out.
+I applied to hundreds of internships as an undergrad. Wrote cover letters at 2am, tweaked margins to squeeze in one more bullet, and still got ghosted by ATS systems that never showed my resume to a human.
+
+I built CalibrCV first as a full SaaS — Vercel, React, Supabase, Stripe. It worked, but it was heavy. Accounts, payments, database, browser automation. A lot of infrastructure for a tool that fundamentally takes text in and spits a PDF out.
 
 So I ripped the core pipeline out and turned it into something you can install in 10 seconds and run offline. The AI logic, the prompts, the scoring engine, the LaTeX template: all the same. The delivery mechanism changed from "web app with auth" to "three commands in your terminal."
+
+The job market is rough enough. Your resume format should not be the thing that stops you.
 
 ## Contributing
 
@@ -242,6 +275,23 @@ cd calibrcv-cli
 npm install
 node bin/calibrcv.js --help
 ```
+
+## Acknowledgments
+
+This project stands on the shoulders of generous tools and teams:
+
+<p align="center">
+  <a href="https://fal.ai"><img src="https://img.shields.io/badge/fal.ai-Backed%20by%20fal.ai-6C47FF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkw0IDdWMTdMMTIgMjJMMjAgMTdWN0wxMiAyWiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="fal.ai" /></a>
+  &nbsp;&nbsp;
+  <a href="https://azerion.ai"><img src="https://img.shields.io/badge/azerion.ai-Powered%20by%20Azerion-00A4EF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="azerion.ai" /></a>
+</p>
+
+<p align="center">
+  <em>Grateful to <a href="https://fal.ai">fal.ai</a> and <a href="https://azerion.ai">azerion.ai</a> for the infrastructure and support that helped bring this project to life.</em>
+</p>
+
+- [**Jake's Resume**](https://github.com/sb2nov/resume) — The LaTeX template that powers every CalibrCV output
+- [**Ollama**](https://ollama.com) — Making local LLMs accessible to everyone
 
 ## License
 

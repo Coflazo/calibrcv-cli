@@ -14,7 +14,7 @@ function getClient() {
  */
 export async function callGemini(systemPrompt, userMessage, options = {}) {
   const model = getClient().getGenerativeModel({
-    model: 'gemini-2.5-flash',
+    model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
     systemInstruction: systemPrompt,
   });
 

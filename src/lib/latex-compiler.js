@@ -26,6 +26,7 @@ export async function compileLaTeX(latexSource) {
 
   const jobId = randomUUID().slice(0, 8);
   const tmpDir = join('/tmp', `calibrcv-${jobId}`);
+  const env = { ...process.env, PATH: `${process.env.PATH}:/Library/TeX/texbin:/usr/local/bin` };
 
   try {
     if (!existsSync(tmpDir)) {
@@ -39,7 +40,7 @@ export async function compileLaTeX(latexSource) {
     // Strategy 1: tectonic
     try {
       execSync(`tectonic "${texPath}" --outdir "${tmpDir}" 2>&1`, {
-        timeout: 30000, stdio: 'pipe',
+        timeout: 30000, stdio: 'pipe', env,
       });
       if (existsSync(pdfPath)) {
         const pdfBuffer = readFileSync(pdfPath);
@@ -53,7 +54,7 @@ export async function compileLaTeX(latexSource) {
     try {
       execSync(
         `cd "${tmpDir}" && pdflatex -interaction=nonstopmode -halt-on-error resume.tex 2>&1`,
-        { timeout: 30000, stdio: 'pipe' }
+        { timeout: 30000, stdio: 'pipe', env }
       );
       if (existsSync(pdfPath)) {
         const pdfBuffer = readFileSync(pdfPath);
@@ -67,7 +68,7 @@ export async function compileLaTeX(latexSource) {
     try {
       execSync(
         `cd "${tmpDir}" && latexmk -xelatex -interaction=nonstopmode -halt-on-error resume.tex 2>&1`,
-        { timeout: 45000, stdio: 'pipe' }
+        { timeout: 45000, stdio: 'pipe', env }
       );
       if (existsSync(pdfPath)) {
         const pdfBuffer = readFileSync(pdfPath);

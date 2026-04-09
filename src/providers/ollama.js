@@ -1,10 +1,11 @@
 /**
  * Ollama provider. Calls the local Ollama REST API.
- * Default: http://localhost:11434, model llama3.1:8b
+ * Default: http://localhost:11434, model llama3.1
+ * Uses streaming to avoid Node.js headers timeout on long generations.
  */
 
 const DEFAULT_HOST = 'http://localhost:11434';
-const DEFAULT_MODEL = 'llama3.1:8b';
+const DEFAULT_MODEL = 'llama3.1';
 
 export async function callOllama(systemPrompt, userMessage, options = {}) {
   const { responseFormat = 'text' } = options;
@@ -17,7 +18,7 @@ export async function callOllama(systemPrompt, userMessage, options = {}) {
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userMessage },
     ],
-    stream: false,
+    stream: true,
     options: { temperature: 0.3 },
   };
 
@@ -52,6 +53,19 @@ export async function callOllama(systemPrompt, userMessage, options = {}) {
     throw new Error(`Ollama API error ${response.status}: ${errorText}`);
   }
 
-  const data = await response.json();
-  return data.message?.content || '';
+  let content = '';
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    const chunk = decoder.decode(value, { stream: true });
+    for (const line of chunk.split('\n').filter(Boolean)) {
+      try {
+        const json = JSON.parse(line);
+        if (json.message?.content) content += json.message.content;
+      } catch (_) { /* skip malformed chunks */ }
+    }
+  }
+  return content;
 }

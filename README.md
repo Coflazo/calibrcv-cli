@@ -1,17 +1,17 @@
 <p align="center">
-  <h1 align="center">calibrcv</h1>
-  <p align="center">
-    Your resume is probably getting rejected by robots. Fix it in your terminal.
-    <br />
-    <br />
-    <a href="#quick-start">Quick Start</a>
-    &middot;
-    <a href="#how-it-works">How It Works</a>
-    &middot;
-    <a href="#llm-providers">Providers</a>
-    &middot;
-    <a href="#the-8-calibrcv-laws">The 8 Laws</a>
-  </p>
+  <img src="assets/logo.png" alt="CalibrCV" width="120" />
+</p>
+<h1 align="center">calibrcv</h1>
+<p align="center">
+  Your resume is probably getting rejected by robots. Fix it in your terminal.
+  <br /><br />
+  <a href="#quick-start">Quick Start</a>
+  &middot;
+  <a href="#what-happens-when-you-run-it">How It Works</a>
+  &middot;
+  <a href="#llm-providers">Providers</a>
+  &middot;
+  <a href="#the-8-calibrcv-laws">The 8 Laws</a>
 </p>
 
 <p align="center">
@@ -19,6 +19,10 @@
   <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg" alt="Node >= 18"></a>
   <a href="https://ollama.com"><img src="https://img.shields.io/badge/LLM-Ollama%20(local)-black.svg" alt="Ollama"></a>
   <a href="https://www.npmjs.com/package/calibrcv"><img src="https://img.shields.io/npm/v/calibrcv.svg" alt="npm version"></a>
+</p>
+
+<p align="center">
+  <img src="assets/demo.gif" alt="calibrcv demo" width="700" />
 </p>
 
 ---
@@ -33,7 +37,7 @@
 npm install -g calibrcv
 
 # pull a local model (free, runs on your machine)
-ollama pull llama3.1:8b
+ollama pull llama3.1
 
 # optimize your resume
 calibrcv build resume.pdf
@@ -117,7 +121,7 @@ calibrcv tries providers in order and falls back automatically. Ollama is always
 
 | Provider | Model | How to enable |
 |----------|-------|---------------|
-| **Ollama** (default) | `llama3.1:8b` | `ollama serve` + `ollama pull llama3.1:8b` |
+| **Ollama** (default) | `llama3.1:8b` | `ollama serve` + `ollama pull llama3.1` |
 | Groq | `llama-3.3-70b` | Set `GROQ_API_KEY` |
 | Google Gemini | `gemini-2.5-flash` | Set `GEMINI_API_KEY` |
 | OpenRouter | `llama-3.1-8b` (free tier) | Set `OPENROUTER_API_KEY` |
@@ -128,7 +132,7 @@ Put your keys in `.env` in your working directory or at `~/.calibrcv/.env`:
 GROQ_API_KEY=gsk_...
 GEMINI_API_KEY=AI...
 OPENROUTER_API_KEY=sk-or-...
-OLLAMA_MODEL=llama3.1:8b
+OLLAMA_MODEL=llama3.1
 ```
 
 Force a specific provider: `calibrcv build resume.pdf --provider groq`

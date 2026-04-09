@@ -20,7 +20,7 @@ export function loadConfig(cliOptions = {}) {
 
   return {
     provider: cliOptions.provider || null,
-    model: cliOptions.model || process.env.OLLAMA_MODEL || 'llama3.1:8b',
+    model: cliOptions.model || process.env.OLLAMA_MODEL || 'llama3.1',
     sector: cliOptions.sector || 'General',
     output: cliOptions.output || null,
     jobUrl: cliOptions.jobUrl || null,

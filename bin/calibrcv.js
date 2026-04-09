@@ -39,6 +39,7 @@ program
   .action(async (resumePath, opts) => {
     try {
       const config = loadConfig(opts);
+      if (config.model) process.env.OLLAMA_MODEL = config.model;
       configureProviders({ provider: config.provider });
 
       // Read the PDF

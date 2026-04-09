@@ -19,6 +19,7 @@
   <a href="https://nodejs.org/en/"><img src="https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg" alt="Node >= 18"></a>
   <a href="https://ollama.com"><img src="https://img.shields.io/badge/LLM-Ollama%20(local)-black.svg" alt="Ollama"></a>
   <a href="https://www.npmjs.com/package/calibrcv"><img src="https://img.shields.io/npm/v/calibrcv.svg" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/calibrcv"><img src="https://img.shields.io/npm/dm/calibrcv.svg" alt="npm downloads"></a>
 </p>
 
 <p align="center">
@@ -44,6 +45,8 @@ calibrcv build resume.pdf
 ```
 
 That's it. Three commands. You get back a PDF, a `.tex` source file, and a terminal score report.
+
+Just want a score? `calibrcv score resume.pdf` runs instantly, no AI needed.
 
 ## What Happens When You Run It
 

@@ -1,19 +1,27 @@
 Output assets/demo.gif
 
-Set FontSize 16
-Set Width 900
-Set Height 520
+Set FontSize 14
+Set Width 880
+Set Height 600
 Set Theme "Dracula"
-Set Padding 20
-Set TypingSpeed 40ms
-Set Shell zsh
+Set Padding 15
+Set TypingSpeed 35ms
+Set Shell "bash"
+Set Framerate 15
+Set WindowBar "Colorful"
 
-Type "cd ~/Desktop/CalibrCV/calibrcv-cli"
+Hide
+Type "cd /tmp"
 Enter
-Sleep 500ms
+Sleep 300ms
+Show
 
-Type "node bin/calibrcv.js score ~/Desktop/Cagan_Oflazoglu_Resume.pdf"
-Sleep 500ms
+Type "calibrcv --help"
+Sleep 300ms
 Enter
-Sleep 5s
-Sleep 3s
+Sleep 3500ms
+
+Type "calibrcv score resume.pdf"
+Sleep 300ms
+Enter
+Sleep 7s

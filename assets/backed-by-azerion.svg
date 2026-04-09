@@ -1,0 +1,8 @@
+<svg width="170" height="40" viewBox="0 0 170 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="170" height="40" rx="8" fill="#E8F4FD"/>
+<rect x="0.25" y="0.25" width="169.5" height="39.5" rx="7.75" stroke="white" stroke-opacity="0.15" stroke-width="0.5"/>
+<circle cx="24" cy="20" r="8" fill="#00A4EF"/>
+<path d="M20 20L24 16L28 20L24 24L20 20Z" fill="white"/>
+<circle cx="24" cy="20" r="2.5" fill="#00A4EF"/>
+<text x="40" y="24.5" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" font-size="13" font-weight="600" fill="#00A4EF">Backed by Azerion</text>
+</svg>

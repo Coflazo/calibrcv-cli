@@ -1,10 +1,16 @@
 <p align="center">
-  <img src="assets/logo.png" alt="CalibrCV" width="120" />
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=200&section=header&text=calibrcv&fontSize=60&fontColor=ffffff&animation=fadeIn&fontAlignY=35&desc=Your%20resume%20is%20probably%20getting%20rejected%20by%20robots.%20Fix%20it%20in%20your%20terminal.&descSize=14&descAlignY=55&descAlign=50" width="100%" alt="calibrcv header" />
 </p>
-<h1 align="center">calibrcv</h1>
+
 <p align="center">
-  Your resume is probably getting rejected by robots. Fix it in your terminal.
-  <br /><br />
+  <img src="assets/logo.png" alt="CalibrCV" width="100" />
+</p>
+
+<p align="center">
+  <a href="https://readme-typing-svg.demolab.com"><img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&pause=1000&color=667EEA&center=true&vCenter=true&random=false&width=500&lines=Everyone+deserves+a+great+resume.;Open+source+ATS+resume+optimizer.;Runs+offline.+No+account.+No+cloud.;9-stage+AI+pipeline+%2B+scoring+engine." alt="Typing SVG" /></a>
+</p>
+
+<p align="center">
   <a href="#quick-start">Quick Start</a>
   &middot;
   <a href="#what-happens-when-you-run-it">How It Works</a>
@@ -28,7 +34,7 @@
 
 ---
 
-**calibrcv** is an open-source CLI that takes your resume PDF, rewrites it using AI under strict editorial rules, compiles it to LaTeX, and enforces a single-page limit through an agentic trim loop. Runs fully offline with Ollama. No account, no cloud, no data leaves your machine unless you choose a cloud provider.
+**calibrcv** is an open-source CLI resume builder and ATS optimizer. It takes your resume PDF, rewrites it using AI under strict editorial rules, compiles it to LaTeX, and enforces a single-page limit through an agentic trim loop. Runs fully offline with Ollama. No account, no cloud, no data leaves your machine unless you choose a cloud provider.
 
 > Most resume tools slap a template on your content and call it optimized. calibrcv runs a 9-stage pipeline with an actual scoring engine. It rewrites every bullet, enforces action verbs, kills filler, compiles to LaTeX, and loops until the result fits on one page. Then it scores the output against 5 ATS categories so you know exactly where you stand.
 
@@ -128,7 +134,7 @@ calibrcv build resume.pdf --vlm --vlm-model qwen2-vl
 
 ### Score (no AI needed)
 
-Just want to know where your resume stands? The scoring engine is pure algorithmic — it uses a smart heuristic parser to detect sections, extract bullets, and identify contact info. No LLM calls, runs instantly.
+Just want to know where your resume stands? The scoring engine is pure algorithmic: it uses a smart heuristic parser to detect sections, extract bullets, and identify contact info. No LLM calls, runs instantly.
 
 ```bash
 # basic score
@@ -179,7 +185,8 @@ VLM_MODEL=qwen2-vl
 
 Force a specific provider: `calibrcv build resume.pdf --provider groq`
 
-## VLM-Based PDF Parsing
+<details>
+<summary><strong>VLM-Based PDF Parsing</strong> (click to expand)</summary>
 
 By default, calibrcv extracts text from PDFs using `pdf-parse`. For scanned or image-based PDFs (where text extraction returns little to nothing), calibrcv can use a **Vision Language Model (VLM)** to read the PDF as an image.
 
@@ -209,6 +216,8 @@ calibrcv build resume.pdf
 | `bakllava` | 4.7 GB | Faster, good quality |
 | `llava` | 4.7 GB | Lightweight option |
 
+</details>
+
 ## The 8 CalibrCV Laws
 
 Every resume produced by calibrcv follows these rules. No exceptions, no overrides.
@@ -224,7 +233,8 @@ Every resume produced by calibrcv follows these rules. No exceptions, no overrid
 | 7 | **Strict Bullet Counts** | Experience: 2-3 bullets. Projects: exactly 2. |
 | 8 | **Abbreviated Dates** | "Jun. 2023" format throughout |
 
-## ATS Scoring
+<details>
+<summary><strong>ATS Scoring Breakdown</strong> (click to expand)</summary>
 
 The scoring engine is pure math. No AI calls, no external API. Five categories, 100 points.
 
@@ -236,14 +246,31 @@ The scoring engine is pure math. No AI calls, no external API. Five categories, 
 | Parsability | 0-15 | Box-drawing chars, em dashes, smart quotes, encoding issues |
 | Completeness | 0-10 | Email, phone, LinkedIn, location, skills breadth |
 
+</details>
+
 ## Before & After
 
-The `assets/` folder includes example resumes showing exactly what calibrcv does:
+<table>
+<tr>
+<td align="center"><strong>Before</strong></td>
+<td align="center"><strong>After (CalibrCV)</strong></td>
+</tr>
+<tr>
+<td><img src="assets/example_before_preview.png" width="350" alt="Resume before CalibrCV" /></td>
+<td><img src="assets/example_after_preview.png" width="350" alt="Resume after CalibrCV" /></td>
+</tr>
+</table>
 
-- **[`example_before.tex`](assets/example_before.tex)** — A typical resume with vague bullets, personal pronouns, no metrics
-- **[`example_after.tex`](assets/example_after.tex)** — Same person, rewritten under the 8 Laws with quantified impact
+<p align="center"><em>Same person, same experience. Left: vague bullets, no metrics. Right: rewritten under the 8 Laws.</em></p>
+
+<details>
+<summary>Want the LaTeX source?</summary>
+
+- [`example_before.tex`](assets/example_before.tex): The original weak resume
+- [`example_after.tex`](assets/example_after.tex): Optimized output under the 8 Laws
 
 Compile them yourself: `pdflatex assets/example_after.tex`
+</details>
 
 ## Prerequisites
 
@@ -257,13 +284,18 @@ Compile them yourself: `pdflatex assets/example_after.tex`
 
 ## Why This Exists
 
+**Everyone deserves a great resume.**
+
 I applied to hundreds of internships as an undergrad. Wrote cover letters at 2am, tweaked margins to squeeze in one more bullet, and still got ghosted by ATS systems that never showed my resume to a human.
 
-I built CalibrCV first as a full SaaS — Vercel, React, Supabase, Stripe. It worked, but it was heavy. Accounts, payments, database, browser automation. A lot of infrastructure for a tool that fundamentally takes text in and spits a PDF out.
+Career tools that actually work are locked behind paywalls, premium tiers, and monthly subscriptions. The people who need them most, students, career changers, people breaking into tech, are the ones least able to pay.
 
-So I ripped the core pipeline out and turned it into something you can install in 10 seconds and run offline. The AI logic, the prompts, the scoring engine, the LaTeX template: all the same. The delivery mechanism changed from "web app with auth" to "three commands in your terminal."
+CalibrCV is the answer: a professional-grade resume pipeline you can install in 10 seconds and run offline. The AI logic, the prompts, the scoring engine, the LaTeX template: all open source. No account, no cloud, no paywall.
 
 The job market is rough enough. Your resume format should not be the thing that stops you.
+
+> *"Education is the most powerful weapon which you can use to change the world."*
+> -- Nelson Mandela
 
 ## Contributing
 
@@ -281,18 +313,22 @@ node bin/calibrcv.js --help
 This project stands on the shoulders of generous tools and teams:
 
 <p align="center">
-  <a href="https://fal.ai"><img src="https://img.shields.io/badge/fal.ai-Backed%20by%20fal.ai-6C47FF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkw0IDdWMTdMMTIgMjJMMjAgMTdWN0wxMiAyWiIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="fal.ai" /></a>
-  &nbsp;&nbsp;
-  <a href="https://azerion.ai"><img src="https://img.shields.io/badge/azerion.ai-Powered%20by%20Azerion-00A4EF?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIxMiIgY3k9IjEyIiByPSIxMCIgZmlsbD0id2hpdGUiLz48L3N2Zz4=" alt="azerion.ai" /></a>
+  <a href="https://fal.ai"><img src="assets/backed-by-fal.svg" alt="Backed by fal.ai" height="40" /></a>
+  &nbsp;&nbsp;&nbsp;
+  <a href="https://azerion.ai"><img src="assets/backed-by-azerion.svg" alt="Backed by Azerion" height="40" /></a>
 </p>
 
 <p align="center">
   <em>Grateful to <a href="https://fal.ai">fal.ai</a> and <a href="https://azerion.ai">azerion.ai</a> for the infrastructure and support that helped bring this project to life.</em>
 </p>
 
-- [**Jake's Resume**](https://github.com/sb2nov/resume) — The LaTeX template that powers every CalibrCV output
-- [**Ollama**](https://ollama.com) — Making local LLMs accessible to everyone
+- [**Jake's Resume**](https://github.com/sb2nov/resume): The LaTeX template that powers every CalibrCV output
+- [**Ollama**](https://ollama.com): Making local LLMs accessible to everyone
 
 ## License
 
 [MIT](LICENSE)
+
+<p align="center">
+  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:667eea,100:764ba2&height=100&section=footer" width="100%" alt="footer" />
+</p>

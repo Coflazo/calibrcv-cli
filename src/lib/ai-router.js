@@ -1,6 +1,6 @@
-import { callOllama } from '../providers/ollama.js';
+import { callOllama, callOllamaVision } from '../providers/ollama.js';
 import { callGroq } from '../providers/groq.js';
-import { callGemini } from '../providers/gemini.js';
+import { callGemini, callGeminiVision } from '../providers/gemini.js';
 import { callOpenRouter } from '../providers/openrouter.js';
 
 export class AllProvidersFailedError extends Error {
@@ -122,4 +122,34 @@ export function parseJSONSafely(text) {
   }
 
   throw new ParseError(text);
+}
+
+/**
+ * Route a VLM (vision) call through available vision-capable providers.
+ * Waterfall: Gemini Vision (if API key) -> Ollama Vision (local).
+ * @param {string} prompt - Text prompt
+ * @param {Buffer[]} imageBuffers - Array of PNG image buffers
+ * @param {{ vlmModel?: string }} options
+ * @returns {Promise<string>}
+ */
+export async function callVLM(prompt, imageBuffers, options = {}) {
+  const errors = [];
+
+  // Gemini first (cloud, faster)
+  if (process.env.GEMINI_API_KEY) {
+    try {
+      return await callGeminiVision(prompt, imageBuffers);
+    } catch (err) {
+      errors.push({ provider: 'gemini-vision', error: err.message });
+    }
+  }
+
+  // Ollama fallback (local, free)
+  try {
+    return await callOllamaVision(prompt, imageBuffers, options.vlmModel);
+  } catch (err) {
+    errors.push({ provider: 'ollama-vision', error: err.message });
+  }
+
+  throw new AllProvidersFailedError(errors);
 }

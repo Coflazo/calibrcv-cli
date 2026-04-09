@@ -100,15 +100,51 @@ class ATSScorer {
   }
 
   scoreKeywordsWithJD(resumeText, jdText) {
+    // Stopwords to filter out — common English words that aren't real keywords
+    const STOPWORDS = new Set([
+      'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+      'of', 'with', 'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been',
+      'be', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
+      'could', 'should', 'may', 'might', 'shall', 'can', 'need', 'must',
+      'not', 'no', 'nor', 'so', 'if', 'then', 'than', 'too', 'very',
+      'just', 'about', 'above', 'after', 'again', 'all', 'also', 'am',
+      'any', 'because', 'before', 'between', 'both', 'during', 'each',
+      'few', 'get', 'got', 'him', 'his', 'her', 'here', 'how', 'its',
+      'into', 'more', 'most', 'new', 'now', 'only', 'other', 'our', 'out',
+      'over', 'own', 'same', 'she', 'some', 'such', 'that', 'their',
+      'them', 'these', 'they', 'this', 'those', 'through', 'under', 'up',
+      'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why',
+      'you', 'your', 'we', 'us', 'me', 'my', 'he', 'it',
+      // Job posting filler words
+      'able', 'across', 'well', 'work', 'working', 'works', 'including',
+      'include', 'includes', 'within', 'using', 'used', 'use', 'make',
+      'like', 'based', 'related', 'required', 'preferred', 'strong',
+      'experience', 'years', 'role', 'position', 'job', 'team', 'company',
+      'companies', 'join', 'looking', 'seek', 'seeking', 'offer', 'apply',
+      'application', 'candidate', 'candidates', 'opportunity', 'will',
+      'responsible', 'responsibilities', 'requirements', 'qualifications',
+      'skills', 'knowledge', 'focused', 'focus', 'issues', 'ensure',
+      'support', 'provide', 'develop', 'manage', 'help', 'part',
+      'right', 'young', 'show', 'take', 'come', 'think', 'keep',
+      'give', 'let', 'begin', 'seem', 'want', 'need', 'try', 'ask',
+      'put', 'mean', 'become', 'leave', 'read', 'run', 'move', 'live',
+      'believe', 'bring', 'happen', 'write', 'sit', 'stand', 'lose',
+      'pay', 'meet', 'play', 'feel', 'number', 'long', 'way', 'day',
+      'look', 'find', 'tell', 'thing', 'much', 'open', 'set',
+      'next', 'high', 'low', 'big', 'small', 'great', 'good', 'best',
+      'first', 'last', 'key', 'topic', 'date', 'level', 'area',
+    ]);
+
     const tfidf = new natural.TfIdf();
     tfidf.addDocument(jdText.toLowerCase());
     tfidf.addDocument(resumeText.toLowerCase());
 
-    // Extract top 30 terms from the JD
+    // Extract meaningful terms from the JD, filtering stopwords
     const jdTerms = [];
     tfidf.listTerms(0).forEach(item => {
-      if (item.term.length > 2 && jdTerms.length < 30) {
-        jdTerms.push(item.term);
+      const term = item.term;
+      if (term.length > 2 && !STOPWORDS.has(term) && jdTerms.length < 25) {
+        jdTerms.push(term);
       }
     });
 
@@ -117,7 +153,12 @@ class ATSScorer {
     const missingKeywords = [];
 
     for (const term of jdTerms) {
-      if (resumeLower.includes(term)) {
+      // Check exact match or stem-level match (e.g. "analysis" matches "analytical")
+      const stemMatch = resumeLower.includes(term) ||
+        resumeLower.includes(term.slice(0, -1)) ||   // drop trailing s/d/e
+        resumeLower.includes(term.slice(0, -2)) ||   // drop -ed, -ly, -al
+        resumeLower.includes(term.slice(0, -3));      // drop -ing, -tion
+      if (stemMatch) {
         matchedKeywords.push(term);
       } else {
         missingKeywords.push(term);
@@ -125,7 +166,8 @@ class ATSScorer {
     }
 
     const matchRate = jdTerms.length > 0 ? matchedKeywords.length / jdTerms.length : 0;
-    const score = Math.round(matchRate * 30);
+    // More generous scoring curve: 40% match = 15pts, 60% = 22pts, 80% = 28pts
+    const score = Math.round(Math.min(matchRate * 1.2, 1) * 30);
 
     return {
       score: Math.min(score, 30),

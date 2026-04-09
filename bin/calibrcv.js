@@ -14,6 +14,7 @@ import { createPipelineUI } from '../src/ui/spinner.js';
 import { runInterview } from '../src/ui/interview.js';
 import { printReport } from '../src/ui/report.js';
 import { scrapeJobUrl } from '../src/lib/job-scraper.js';
+import { parseResume } from '../src/lib/resume-parser.js';
 
 const program = new Command();
 
@@ -35,6 +36,8 @@ program
   .option('-p, --provider <name>', 'LLM provider (ollama, groq, gemini, openrouter)')
   .option('-m, --model <name>', 'Ollama model name')
   .option('--skip-enrich', 'Skip the enrichment interview')
+  .option('--vlm', 'Use Vision Language Model for PDF extraction')
+  .option('--vlm-model <name>', 'VLM model name (default: qwen2-vl for Ollama)')
   .option('-v, --verbose', 'Verbose output')
   .action(async (resumePath, opts) => {
     try {
@@ -91,6 +94,8 @@ program
         targetSector: config.sector,
         jobDescription,
         outputPath,
+        vlm: config.vlm,
+        vlmModel: config.vlmModel,
       });
 
       if (phase1.requiresEnrichment) {
@@ -166,20 +171,8 @@ program
         }
       }
 
-      // Build a minimal resume JSON from raw text for scoring
-      const resumeJSON = {
-        summary: '',
-        experience: [{ title: '', bullets: text.split('\n').filter(l => l.trim().length > 20) }],
-        education: [{ institution: '', dates: 'present' }],
-        skills: { quantitative_stack: '', analytic_domain: '' },
-        projects: [],
-        contact: {
-          email: text.match(/[\w.-]+@[\w.-]+/)?.[0] || '',
-          phone: text.match(/[\+\d\s\-\(\)]{7,}/)?.[0] || '',
-          linkedin: text.match(/linkedin\.com\/in\/([\w-]+)/)?.[1] || '',
-          location: '',
-        },
-      };
+      // Parse resume text into structured JSON for scoring
+      const resumeJSON = parseResume(text);
 
       const report = atsScorer.score(text, resumeJSON, jobDescription);
       printReport(report);

@@ -54,7 +54,7 @@ Just want a score? `calibrcv score resume.pdf` runs instantly, no AI needed.
 resume.pdf
     |
     v
- 1. Parse PDF .............. extract raw text
+ 1. Parse PDF .............. extract text (or use VLM for image-based PDFs)
     |
     v
  2. Analyze ................ LLM diagnoses weaknesses, generates 3-7 questions
@@ -107,15 +107,27 @@ calibrcv build resume.pdf --model mistral
 
 # skip the enrichment Q&A
 calibrcv build resume.pdf --skip-enrich
+
+# use VLM (vision model) for PDF extraction — great for scanned/image PDFs
+calibrcv build resume.pdf --vlm
+
+# use a specific vision model with Ollama
+calibrcv build resume.pdf --vlm --vlm-model qwen2-vl
 ```
 
 ### Score (no AI needed)
 
-Just want to know where your resume stands? The scoring engine is pure algorithmic. No LLM calls, runs instantly.
+Just want to know where your resume stands? The scoring engine is pure algorithmic — it uses a smart heuristic parser to detect sections, extract bullets, and identify contact info. No LLM calls, runs instantly.
 
 ```bash
+# basic score
 calibrcv score resume.pdf
+
+# score against a job description file
 calibrcv score resume.pdf --job-desc posting.txt
+
+# score against a live job posting (keyword matching)
+calibrcv score resume.pdf --job-url "https://linkedin.com/jobs/view/123456"
 ```
 
 ## LLM Providers
@@ -136,9 +148,46 @@ GROQ_API_KEY=gsk_...
 GEMINI_API_KEY=AI...
 OPENROUTER_API_KEY=sk-or-...
 OLLAMA_MODEL=llama3.1
+VLM_MODEL=qwen2-vl
 ```
 
 Force a specific provider: `calibrcv build resume.pdf --provider groq`
+
+## VLM-Based PDF Parsing
+
+By default, calibrcv extracts text from PDFs using `pdf-parse`. For scanned or image-based PDFs (where text extraction returns little to nothing), calibrcv can use a **Vision Language Model (VLM)** to read the PDF as an image.
+
+```bash
+# explicitly use VLM extraction
+calibrcv build resume.pdf --vlm
+
+# auto-fallback: if pdf-parse detects an image-based PDF, VLM kicks in automatically
+calibrcv build resume.pdf
+```
+
+**VLM provider waterfall:** Gemini Flash (cloud, fast) -> Ollama + qwen2-vl (local, free)
+
+| Provider | Model | How to enable | Speed |
+|----------|-------|---------------|-------|
+| **Google Gemini** | `gemini-2.5-flash` | Set `GEMINI_API_KEY` | Fast |
+| **Ollama** (local) | `qwen2-vl` | `ollama pull qwen2-vl` | Slower, fully offline |
+
+To use a different Ollama vision model:
+
+```bash
+calibrcv build resume.pdf --vlm --vlm-model llava:13b
+# or set VLM_MODEL in .env
+VLM_MODEL=bakllava
+```
+
+**Recommended vision models for Ollama:**
+
+| Model | Size | Best for |
+|-------|------|----------|
+| `qwen2-vl` | 4.4 GB | Best quality, default choice |
+| `llava:13b` | 8 GB | Strong alternative |
+| `bakllava` | 4.7 GB | Faster, good quality |
+| `llava` | 4.7 GB | Lightweight option |
 
 ## The 8 CalibrCV Laws
 
@@ -162,7 +211,7 @@ The scoring engine is pure math. No AI calls, no external API. Five categories, 
 | Category | Points | What it checks |
 |----------|--------|---------------|
 | Structural Integrity | 0-20 | Required sections present, dates on all entries |
-| Keyword Density | 0-30 | TF-IDF matching against job description (or lexical richness) |
+| Keyword Density | 0-30 | TF-IDF matching against job description with stopword filtering and stem matching (or lexical richness without JD) |
 | Content Quality | 0-25 | HBS verb compliance, quantified metrics, bullet length |
 | Parsability | 0-15 | Box-drawing chars, em dashes, smart quotes, encoding issues |
 | Completeness | 0-10 | Email, phone, LinkedIn, location, skills breadth |

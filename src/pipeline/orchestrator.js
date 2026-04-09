@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { callAI, parseJSONSafely } from '../lib/ai-router.js';
 import { extractTextFromPDF } from '../lib/pdf-extractor.js';
+import { extractWithVLM } from '../lib/vlm-extractor.js';
 import { buildAnalyzePrompt } from '../prompts/analyze.js';
 import { buildSynthesizePrompt } from '../prompts/synthesize.js';
 import { buildLatexPrompt } from '../prompts/latex.js';
@@ -48,14 +49,31 @@ export class ResumePipeline extends EventEmitter {
     analysis = null,
     jobDescription = null,
     outputPath = null,
+    vlm = false,
+    vlmModel = null,
   }) {
     try {
       // STAGE 1: Parse PDF
       let text = resumeText;
       if (!text) {
         this.setState('parsing', 'Extracting resume content...', 5);
-        const extracted = await extractTextFromPDF(pdfBuffer);
-        text = extracted.text;
+
+        if (vlm) {
+          // VLM extraction requested explicitly
+          this.setState('parsing', 'Extracting with vision model...', 5);
+          const vlmResult = await extractWithVLM(pdfBuffer, { vlmModel });
+          text = vlmResult.text;
+        } else {
+          const extracted = await extractTextFromPDF(pdfBuffer);
+          if (extracted.isImageBased) {
+            // Auto-fallback to VLM for image-based PDFs
+            this.setState('parsing', 'Image-based PDF detected, using vision model...', 5);
+            const vlmResult = await extractWithVLM(pdfBuffer, { vlmModel });
+            text = vlmResult.text;
+          } else {
+            text = extracted.text;
+          }
+        }
       }
 
       // STAGE 2: Analyze

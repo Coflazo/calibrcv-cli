@@ -27,5 +27,7 @@ export function loadConfig(cliOptions = {}) {
     jobDesc: cliOptions.jobDesc || null,
     skipEnrich: cliOptions.skipEnrich || false,
     verbose: cliOptions.verbose || false,
+    vlm: cliOptions.vlm || false,
+    vlmModel: cliOptions.vlmModel || process.env.VLM_MODEL || 'qwen2-vl',
   };
 }

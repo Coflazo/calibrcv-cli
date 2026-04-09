@@ -15,10 +15,16 @@ export async function extractTextFromPDF(pdfBuffer) {
     const text = data.text?.trim() || '';
 
     if (text.length < 50) {
-      throw new PDFExtractionError(
-        'PDF appears to contain very little text. It may be image-based or scanned. ' +
-        'Please use a text-based PDF for best results.'
-      );
+      return {
+        text,
+        pages: data.numpages || 1,
+        info: {
+          title: data.info?.Title || null,
+          author: data.info?.Author || null,
+          creator: data.info?.Creator || null,
+        },
+        isImageBased: true,
+      };
     }
 
     return {
